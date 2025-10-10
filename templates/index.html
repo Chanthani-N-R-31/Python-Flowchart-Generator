@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat UI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">
+</head>
+<body>
+
+  <div class="top-bar">
+    <h2>HELLO CHATBOT :)</h2>
+    <div class="user-info">
+      <div class="profile-circle">
+        {{ user['name'][0] if user and 'name' in user else '?' }}
+      </div>
+      <div>
+        <div class="username">
+          {{ user['name'] if user and 'name' in user else 'Guest' }}
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    {% if response %}
+      <div class="bot-message">{{ response }}</div>
+    {% endif %}
+  </div>
+
+  <div class="input-area">
+    <!-- THIS IS THE SINGLE, CORRECTED FORM TAG -->
+    <form method="POST" action="{{ url_for('generate') }}">
+      <input type="text" name="prompt" placeholder="Type your prompt here..." required>
+      <button type="submit" class="btn" name="action" value="code">Generate Code</button>
+      <button type="submit" class="btn" name="action" value="flowchart">Generate Flowchart</button>
+    </form>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">Welcome back, what shall we visualize today?</div>
+  </div>
+
+</body>
+</html>
+

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code & Flowchart</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style3.css') }}">
+  <style>
+    .mermaid {
+      /* This helps center the initial render of the flowchart */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="nav-bar">
+    <div class="nav-bar-left">
+      <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+      <!-- This form allows regenerating the code from the flowchart view -->
+      <form method="POST" action="{{ url_for('generate') }}" style="margin: 0; padding: 0; display: inline;">
+          <input type="hidden" name="prompt" value="{{ prompt }}">
+          <button type="submit" name="action" value="code" class="nav-link-button">Code</button>
+      </form>
+    </div>
+    
+    <div class="user-info">
+      <div class="profile-circle">
+        {{ user['name'][0] if user and 'name' in user else '?' }}
+      </div>
+      <span class="username">
+        {{ user['name'] if user and 'name' in user else 'Guest' }}
+      </span>
+      <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="content-area">
+    <!-- Left Panel for Code -->
+    <div class="panel code-panel">
+      <div class="panel-header">
+        <span>source code</span>
+      </div>
+      <pre class="panel-content code-block"><code>{{ code|safe }}</code></pre>
+    </div>
+
+    <!-- Right Panel for Flowchart -->
+    <div class="panel flowchart-panel">
+      <div class="panel-header">
+        <span>panel for flowchart generation</span>
+        <!-- Zoom control buttons -->
+        <div class="zoom-controls">
+            <button id="zoomOutBtn" title="Zoom Out" class="zoom-btn">-</button>
+            <button id="zoomInBtn" title="Zoom In" class="zoom-btn">+</button>
+        </div>
+      </div>
+      
+      <!-- The container for the flowchart, enabling scroll/pan -->
+      <div class="panel-content flowchart-block" id="flowchartContainer">
+        <pre class="mermaid">
+          {{ flowchart|safe }}
+        </pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mermaid.js library from a CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+
+  <!-- Robust JavaScript for Zoom and Pan Functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const container = document.getElementById('flowchartContainer');
+        
+        let currentZoom = 1.0;
+        let svgElement = null;
+
+        // This function will be called once the SVG is found
+        const setupZoom = () => {
+            svgElement = container.querySelector('.mermaid svg');
+            if (svgElement) {
+                // Set styles needed for smooth zooming and panning
+                svgElement.style.transformOrigin = 'center';
+                svgElement.style.transition = 'transform 0.15s ease-in-out';
+                updateZoom();
+            }
+        };
+
+        const updateZoom = () => {
+            if (svgElement) {
+                svgElement.style.transform = `scale(${currentZoom})`;
+            }
+        };
+
+        // Watch the container for changes. When Mermaid adds the SVG, this will trigger.
+        const observer = new MutationObserver((mutations, obs) => {
+            if (container.querySelector('.mermaid svg')) {
+                setupZoom(); // The SVG now exists, set up zoom logic
+                obs.disconnect(); // Stop watching once we've found it
+                return;
+            }
+        });
+
+        // Start observing the container for when the SVG is added
+        observer.observe(container, {
+            childList: true,
+            subtree: true
+        });
+
+        // Event listeners for the zoom buttons
+        zoomInBtn.addEventListener('click', () => {
+            if (svgElement) {
+                currentZoom += 0.15;
+                updateZoom();
+            }
+        });
+
+        zoomOutBtn.addEventListener('click', () => {
+            if (svgElement && currentZoom > 0.3) { // Set a minimum zoom level
+                currentZoom -= 0.15;
+                updateZoom();
+            }
+        });
+    });
+  </script>
+
+</body>
+</html>
+

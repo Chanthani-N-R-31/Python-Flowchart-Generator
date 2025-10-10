@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Chatbot</title>
+    <!-- This is the correct Flask syntax to link to your CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <!-- Google Fonts for a nicer look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1 class="google-title">
+                <span style="color: #4285F4;">G</span>
+                <span style="color: #DB4437;">o</span>
+                <span style="color: #F4B400;">o</span>
+                <span style="color: #4285F4;">g</span>
+                <span style="color: #0F9D58;">l</span>
+                <span style="color: #DB4437;">e</span>
+            </h1>
+            <h2>Welcome</h2>
+            <p class="subtitle">Use your Google Account to sign in</p>
+
+            <!-- This is a styled link that looks like a button.
+                 It correctly points to the /login/google route in your Python app. -->
+            <a href="{{ url_for('google.login') }}" class="btn google">
+                <img src="https://www.google.com/favicon.ico" alt="Google icon">
+                Sign in with Google
+            </a>
+        </div>
+    </div>
+</body>
+</html>

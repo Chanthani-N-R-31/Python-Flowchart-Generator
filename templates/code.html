@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generated Code</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+
+  <div class="nav-bar">
+    <div class="nav-bar-left">
+      <a href="{{ url_for('index') }}" class="nav-link">Home</a>
+      
+      <form method="POST" action="{{ url_for('generate') }}" style="margin: 0; padding: 0; display: inline;">
+          <input type="hidden" name="prompt" value="{{ prompt }}">
+          <button type="submit" name="action" value="flowchart" class="nav-link-button">Flowchart</button>
+      </form>
+    </div>
+    
+    <div class="user-info">
+      <div class="profile-circle">
+        {{ user['name'][0] if user and 'name' in user else '?' }}
+      </div>
+      <span class="username">
+        {{ user['name'] if user and 'name' in user else 'Guest' }}
+      </span>
+      <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </div>
+  </div>
+
+  <div class="content-area">
+    <div class="query-bar">
+      <span>{{ prompt }}</span>
+    </div>
+
+    <div class="code-console">
+      <div class="console-header">
+        <span class="console-title">bot-message</span>
+        <div class="console-icons">
+          <span>&#9432;</span> <!-- Info Icon -->
+        </div>
+      </div>
+      <pre class="code-block"><code>{{ code|safe }}</code></pre>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span class="footer-text">Powered by Gemini AI</span>
+  </div>
+
+</body>
+</html>
+
